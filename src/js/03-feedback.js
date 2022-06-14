@@ -25,22 +25,17 @@ function onInputData(evt) {
     formData[evt.target.name] = evt.target.value;
     localStorage.setItem(STORAGE_KEY, JSON.stringify(formData));
 }
-
 function onFormSubmit(evt) {
     evt.preventDefault();
     evt.target.reset();
     localStorage.removeItem(STORAGE_KEY);
-   
-    console.log('Form accepted :)');
     console.log(formData);
-    
+   
 }
 
-function onLocalStorage(){
-    const savedMessage = localStorage.getItem(STORAGE_KEY)
-        if(savedMessage){
-            
-            refs.message.value = savedMessage; 
-            refs.email.value = savedMessage;   
-  }
+function onLocalStorage() {
+    if (savedValue) {
+        parsedValue.email === undefined ? email.value = "" : email.value = parsedValue.email;
+        parsedValue.message === undefined ? message.value = "" : message.value = parsedValue.message;
+    }
 }
