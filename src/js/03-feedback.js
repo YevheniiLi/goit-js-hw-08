@@ -1,46 +1,41 @@
+
+
 import throttle from 'lodash.throttle';
 
+const form = document.querySelector(".feedback-form");
+const email = document.querySelector('input');
+const message = document.querySelector('textarea');
 
-const refs = {
-    form: document.querySelector('.feedback-form'),
-    message: document.querySelector('textarea'),
-    email: document.querySelector('input'),
-};
+form.addEventListener("input", throttle(onInputText, 500));
+form.addEventListener("submit", onFormSubmit);
 
-    let formData = {}
-    const STORAGE_KEY = "feedback-form-state";
+const STORAGE_KEY = "feedback-form-state";
+const savedValue = localStorage.getItem(STORAGE_KEY);
+const parsedValue = JSON.parse(savedValue);
+const formData = { ...parsedValue };
 
-refs.form.addEventListener('submit', onFormSubmit);
-refs.message.addEventListener('input', throttle(onMessageInput, 500));
-refs.email.addEventListener('input', throttle(onInputData, 500));
+onLocaleStorage();
 
-onLocalStorage();
-
-function onInputData(evt) {
+function onInputText(evt) {
     formData[evt.target.name] = evt.target.value;
     localStorage.setItem(STORAGE_KEY, JSON.stringify(formData));
 }
+
 function onFormSubmit(evt) {
     evt.preventDefault();
-       console.log(formData);
-    evt.currentTarget.reset();
+    if (!email.value || !message.value) {
+        return alert("Fill out the form please");
+    }
+    evt.target.reset();
     localStorage.removeItem(STORAGE_KEY);
-    formData = {};
-
+    console.log(formData);
+    formData.email = '';
+    formData.message = '';
 }
 
-function onMessageInput(event) {
-    let message = event.target.value;
-     localStorage.setItem(STORAGE_KEY,message);
- }
- 
- function onLocalStorage() {
-     let savedInfo = JSON.parse(localStorage.getItem(STORAGE_KEY));
-     for (const key in savedInfo) {
-       if (key) {
-         formRef[key].value = savedInfo[key];
-         formData = savedInfo;
-       }
-     }
-   }
-
+function onLocaleStorage() {
+    if (savedValue) {
+        parsedValue.email === undefined ? email.value = "" : email.value = parsedValue.email;
+        parsedValue.message === undefined ? message.value = "" : message.value = parsedValue.message;
+    }
+}
